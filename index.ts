@@ -45,11 +45,6 @@ const isDirectRun = process.argv[1] === import.meta.url ||
 
 // 항상 실행되는 디버그 로그 (런타임 진단용)
 if (process.env.DEBUG_MCP) {
-  console.log('Runtime debug info:');
-  console.log('process.argv:', process.argv);
-  console.log('import.meta.url:', import.meta.url);
-  console.log('isDirectRun:', isDirectRun);
-  console.log('process.env.npm_execpath:', process.env.npm_execpath);
 }
 
 if (isDirectRun) {
@@ -57,7 +52,6 @@ if (isDirectRun) {
   const args = process.argv.slice(2);
   
   // 디버깅용 로그
-  console.log('Command line arguments:', args);
   
   // Parse language argument
   let language: string | undefined;
@@ -82,9 +76,6 @@ if (isDirectRun) {
   };
   
   // 디버깅용 로그
-  console.log('Environment variables:');
-  console.log('GITHUB_ENTERPRISE_URL:', process.env.GITHUB_ENTERPRISE_URL || '(none)');
-  console.log('GITHUB_TOKEN:', process.env.GITHUB_TOKEN ? '(set)' : '(none)');
   
   // Improved argument parsing
   for (let i = 0; i < args.length; i++) {
@@ -92,20 +83,16 @@ if (isDirectRun) {
     
     // Handle --option=value format
     if (arg.includes('=')) {
-      console.log(`Processing argument with =: ${arg}`);
       let [key, value] = arg.split('=', 2);
       
       if (key === '--baseUrl' || key === '--github-api-url' || key === '--github-enterprise-url') {
-        console.log(`Setting baseUrl to: ${value}`);
         options.config!.baseUrl = value;
       }
       else if (key === '--token') {
-        console.log('Setting token from --token=value format');
         options.config!.token = value;
       }
       else if (key === '--transport') {
         if (value === 'http' || value === 'stdio') {
-          console.log(`Setting transport to: ${value}`);
           options.transport = value;
         } else {
           console.warn(`Unsupported transport type: ${value}. Setting to 'stdio'.`);
@@ -121,25 +108,20 @@ if (isDirectRun) {
     
     // Handle --option value format
     if (arg === '--baseUrl' && i + 1 < args.length) {
-      console.log(`Setting baseUrl to: ${args[i+1]}`);
       options.config!.baseUrl = args[++i];
     }
     else if (arg === '--github-api-url' && i + 1 < args.length) {
-      console.log(`Setting baseUrl to: ${args[i+1]}`);
       options.config!.baseUrl = args[++i];
     }
     else if (arg === '--github-enterprise-url' && i + 1 < args.length) {
-      console.log(`Setting baseUrl to: ${args[i+1]}`);
       options.config!.baseUrl = args[++i];
     }
     else if (arg === '--token' && i + 1 < args.length) {
-      console.log('Setting token from --token value format');
       options.config!.token = args[++i];
     }
     else if (arg === '--transport' && i + 1 < args.length) {
       const transportValue = args[++i];
       if (transportValue === 'http' || transportValue === 'stdio') {
-        console.log(`Setting transport to: ${transportValue}`);
         options.transport = transportValue;
       } else {
         console.warn(`Unsupported transport type: ${transportValue}. Setting to 'stdio'.`);
@@ -213,21 +195,11 @@ Environment Variables:
   }
 
   // 설정 상태 확인
-  console.log('Final configuration:');
-  console.log('baseUrl:', options.config?.baseUrl || '(none)');
-  console.log('token:', options.config?.token ? '(set)' : '(none)');
-  console.log('transport:', options.transport || 'stdio');
-  console.log('debug:', options.config?.debug ? 'true' : 'false');
-  console.log('language:', options.config?.language || 'en');
 
-  console.log('Starting MCP GitHub Enterprise Server...');
   if (options.config?.baseUrl) {
-    console.log(`Detected GitHub API URL: ${options.config.baseUrl}`);
   } else {
-    console.log(`Detected GitHub API URL: (none)`);
   }
   
-  console.log(`Token provided: ${options.config?.token ? 'yes' : 'no'}`);
 
   // Initialize i18n with loaded config
   const config = loadConfig(options.config);

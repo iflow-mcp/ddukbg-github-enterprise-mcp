@@ -2152,8 +2152,6 @@ export async function startServer(options: GitHubServerOptions = {}): Promise<vo
     // Using HTTP transport
     const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
     await startHttpServer(server, port);
-    console.log(i18n.t('common', 'server_start_http', { port }));
-    console.log(i18n.t('common', 'api_url', { url: config.baseUrl }));
   } else {
     // Using default stdio transport
     const transport = new StdioServerTransport();
@@ -2164,12 +2162,9 @@ export async function startServer(options: GitHubServerOptions = {}): Promise<vo
     // Handle connection errors
     try {
       await server.connect(transport);
-      console.log(i18n.t('common', 'server_start', { transport: options.transport || 'stdio' }));
-      console.log(i18n.t('common', 'api_url', { url: config.baseUrl }));
       
       // Handle connection termination
       process.on('SIGINT', () => {
-        console.log(i18n.t('common', 'server_shutdown'));
         process.exit(0);
       });
     } catch (error: any) {
